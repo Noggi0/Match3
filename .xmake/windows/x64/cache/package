@@ -1,0 +1,57 @@
+{
+    sfml = {
+        links = {
+            "flac",
+            "freetype",
+            "ogg",
+            "openal32",
+            "sfml-audio-s",
+            "sfml-graphics-s",
+            "sfml-main",
+            "sfml-network-s",
+            "sfml-system-s",
+            "sfml-window-s",
+            "vorbis",
+            "vorbisenc",
+            "vorbisfile"
+        },
+        __installdir = [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe]],
+        linkdirs = [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib]],
+        envs = {
+            PATH = {
+                [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\bin]],
+                [[C:\Users\vince\AppData\Local\.xmake\packages\c\cmake\3.21.0\b14e2ab395d54ecd9721929979be4a98\bin]]
+            }
+        },
+        libfiles = {
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\flac.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\freetype.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\ogg.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\openal32.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-audio-s.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-graphics-s.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-main.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-network-s.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-system-s.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\sfml-window-s.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\vorbis.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\vorbisenc.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\lib\vorbisfile.lib]],
+            [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\bin\openal32.dll]]
+        },
+        __enabled = true,
+        __requirestr = "sfml",
+        defines = "SFML_STATIC",
+        syslinks = {
+            "opengl32",
+            "gdi32",
+            "user32",
+            "advapi32",
+            "ws2_32",
+            "winmm"
+        },
+        shared = true,
+        static = true,
+        sysincludedirs = [[C:\Users\vince\AppData\Local\.xmake\packages\s\sfml\2.5.1\9a922774ed0f414bb9efd13bbcfe36fe\include]]
+    }
+}

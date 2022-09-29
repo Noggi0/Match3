@@ -1,0 +1,14 @@
+{
+    find_program = {
+        ping = "/usr/bin/ping",
+        gzip = "/usr/bin/gzip",
+        tar = "/usr/bin/tar",
+        dmd = false,
+        ldc2 = false,
+        gdc = false,
+        zig = false,
+        git = "/usr/bin/git",
+        unzip = "/usr/bin/unzip",
+        gcc = "/usr/bin/gcc"
+    }
+}

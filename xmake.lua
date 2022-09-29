@@ -1,0 +1,7 @@
+add_requires("sfml")
+target("match3")
+    set_languages("c++17")
+    set_kind("binary")
+    add_files("./main.cpp")
+    add_files("src/*.cpp")
+    add_packages("sfml")

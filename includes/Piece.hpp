@@ -12,7 +12,7 @@
 enum PieceState {
     NONE,
     SELECTED, // The piece is selected
-    MATCHED // The piece is in a match. Waiting for deletion
+    MATCHED // The piece is in a match. Waiting for deletion,
 };
 
 class Piece
@@ -26,7 +26,8 @@ class Piece
 		const sf::Vector2f getPosition() const;
 		void setPosition(sf::Vector2f pos);
 		const bool isSelected() const;
-		void setSelected(bool selected);
+		void setStatus(PieceState state);
+		const PieceState getStatus() const;
 		~Piece() = default;
 	private:
 		int type;

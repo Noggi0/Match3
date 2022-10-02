@@ -18,7 +18,7 @@ void handleMouseClicks(sf::Event* event, Board* board)
 		if (x > piecePosition.x && x < piecePosition.x + 60 && y > piecePosition.y && y < piecePosition.y + 60) {
 			if (board->getState() != BoardState::SELECTING) {
 				std::cout << "------- Piece clicked -------" << std::endl;
-				piece->setSelected(true);
+				piece->setStatus(PieceState::SELECTED);
 				board->setState(BoardState::SELECTING);
 				board->setSelectedPieceIndex(index);
 			}

@@ -48,7 +48,7 @@ const int Board::getSelectedPieceIndex() const
 void Board::setSelectedPieceIndex(int index)
 {
     if (index == -1)
-        this->pieces.at(this->selectedPieceIndex)->setSelected(false);
+        this->pieces.at(this->selectedPieceIndex)->setStatus(PieceState::NONE);
     this->selectedPieceIndex = index;
 }
 
@@ -88,7 +88,7 @@ void Board::swapPieces(int index)
     this->pieces.at(this->selectedPieceIndex) = otherPiece;
     this->pieces.at(index) = tempPiece;
 
-    selected->setSelected(false);
+    selected->setStatus(PieceState::NONE);
 }
 
 void Board::checkForMatches()
@@ -104,8 +104,6 @@ void Board::checkForMatches()
 
     When you finish the 8th column, move down a row.
 
-    This would allow much simpler code in the for loop,
-    since you do not have an if structure with some code on one side, and slightly tweaked code below it.
     **/
 
     // x x x x x x
@@ -116,16 +114,29 @@ void Board::checkForMatches()
     for (int i = 0; i < this->pieces.size(); i++) {
         if (i % width <= width - 2 &&  this->pieces.at(i)->getType() == this->pieces.at(i + 1)->getType()) {
             if (this->pieces.at(i)->getType() == this->pieces.at(i + 2)->getType()) {
-                // set status to MATCHED and remove it
+                this->pieces.at(i)->setStatus(PieceState::MATCHED);
+                this->pieces.at(i + 1)->setStatus(PieceState::MATCHED);
+                this->pieces.at(i + 2)->setStatus(PieceState::MATCHED);
                 std::cout << "Horizontal 3match" << std::endl;
             }
         }
 
         if ((i / width) < height - 2 && (this->pieces.at(i)->getType() == this->pieces.at(i + width)->getType())) {
             if (this->pieces.at(i)->getType() == this->pieces.at(i + (width * 2))->getType()) {
-                // set status to MATCHED and remove it
+                this->pieces.at(i)->setStatus(PieceState::MATCHED);
+                this->pieces.at(i + width)->setStatus(PieceState::MATCHED);
+                this->pieces.at(i + (width * 2))->setStatus(PieceState::MATCHED);
                 std::cout << "Vertical match" << std::endl;
             }
+        }
+    }
+
+    for (int i = 0; i < this->pieces.size(); i++) {
+        if (this->pieces.at(i)->getStatus() == PieceState::MATCHED) {
+            auto position = this->pieces.at(i)->getPosition();
+            this->pieces.erase(this->pieces.begin() + i);
+            this->pieces.insert(this->pieces.begin() + i, new Piece(this->random(this->rng), std::make_pair(position.x / 60, position.y / 60)));
+            std::cout << "------- Piece removed -------" << std::endl;
         }
     }
 }

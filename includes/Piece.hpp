@@ -9,10 +9,16 @@
 #include <utility>
 #include <SFML/Graphics.hpp>
 
+enum PieceState {
+    NONE,
+    SELECTED, // The piece is selected
+    MATCHED // The piece is in a match. Waiting for deletion
+};
+
 class Piece
 {
-	// TODO: Load qu'une seule texture, au lieu de load la texture a chaque fois qu'on a une pièce.
-	// TODO: Derive de Drawable i guess ? ça rendrait le draw call générique
+	// TODO: Load qu'une seule texture, au lieu de load la texture a chaque fois qu'on a une piï¿½ce.
+	// TODO: Derive de Drawable i guess ? ï¿½a rendrait le draw call gï¿½nï¿½rique
 	public:
 		Piece(int type, std::pair<int, int> position);
 		const int getType() const;
@@ -27,7 +33,7 @@ class Piece
 		std::pair<int, int> position;
 		std::unique_ptr<sf::Sprite> sprite;
 		std::unique_ptr<sf::Texture> texture;
-		bool selected;
+		PieceState state = NONE;
 };
 
 #endif /* __PIECE_HPP__ */

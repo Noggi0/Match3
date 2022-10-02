@@ -16,14 +16,14 @@ void handleMouseClicks(sf::Event* event, Board* board)
 		sf::Vector2f piecePosition = piece->getPosition();
 
 		if (x > piecePosition.x && x < piecePosition.x + 60 && y > piecePosition.y && y < piecePosition.y + 60) {
-			if (board->getState() != State::SELECTED) {
+			if (board->getState() != BoardState::SELECTING) {
 				std::cout << "------- Piece clicked -------" << std::endl;
 				piece->setSelected(true);
-				board->setState(State::SELECTED);
+				board->setState(BoardState::SELECTING);
 				board->setSelectedPieceIndex(index);
 			}
 			else {
-				board->setState(State::NONE);
+				board->setState(BoardState::NORMAL);
 				if (board->isNeighbour(index))
 					board->swapPieces(index);
 				board->setSelectedPieceIndex(-1);

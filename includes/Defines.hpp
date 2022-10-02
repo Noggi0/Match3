@@ -10,6 +10,8 @@
 /* Paths */
 #ifdef _WIN32
 	const std::string ASSETS_PATH = "../../../../assets/";
+#else
+	const std::string ASSETS_PATH = "../../../../assets/";
 #endif
 
 /* Window Size */

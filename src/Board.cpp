@@ -10,7 +10,7 @@ Board::Board(int width, int height, int typesNb)
     : width(std::move(width)), height(std::move(height)), typesNb(std::move(typesNb))
 {
     std::cout << "------- Board created -------" << std::endl;
-    this->state = State::NONE;
+    this->state = BoardState::NORMAL;
     std::random_device device;
     this->rng = std::mt19937(device());
     this->random = std::uniform_int_distribution<std::mt19937::result_type>(0, 7);
@@ -30,12 +30,12 @@ const std::vector<Piece *> Board::getPieces() const
     return this->pieces;
 }
 
-const State Board::getState() const
+const BoardState Board::getState() const
 {
     return this->state;
 }
 
-void Board::setState(State state)
+void Board::setState(BoardState state)
 {
     this->state = state;
 }

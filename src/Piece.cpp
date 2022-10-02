@@ -40,17 +40,17 @@ const sf::Vector2f Piece::getPosition() const
 
 void Piece::setSelected(bool selected)
 {
-	this->selected = selected;
+	this->state = selected ? PieceState::SELECTED : PieceState::NONE;
 
-	if (this->selected)
+	if (this->state == PieceState::SELECTED)
 		this->sprite->setScale(sf::Vector2f(0.11f, 0.11f));
-	else if (!this->selected)
+	else
 		this->sprite->setScale(sf::Vector2f(0.1f, 0.1f));
 }
 
 const bool Piece::isSelected() const
 {
-	return this->selected;
+	return this->state == PieceState::SELECTED;
 }
 
 void Piece::setPosition(sf::Vector2f pos)

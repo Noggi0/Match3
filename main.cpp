@@ -21,8 +21,10 @@ int main()
                 renderer->getWindow()->close();
             else if (event.type == sf::Event::MouseButtonReleased)
                 handleMouseClicks(&event, board.get());
+            else if (event.type == sf::Event::Resized)
+                renderer->getWindow()->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
         }
-        board->checkForMatches();
+        board->update();
         renderer->draw(board->getPieces());
     }
     return 0;

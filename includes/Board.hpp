@@ -29,6 +29,8 @@ class Board
         bool isNeighbour(int index) const;
         void swapPieces(int index);
         void checkForMatches();
+        const bool isWaiting();
+        void update();
         ~Board() = default;
     private:
         int width;

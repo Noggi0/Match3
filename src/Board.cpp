@@ -47,8 +47,6 @@ const int Board::getSelectedPieceIndex() const
 
 void Board::setSelectedPieceIndex(int index)
 {
-    if (index == -1)
-        this->pieces.at(this->selectedPieceIndex)->setStatus(PieceState::NONE);
     this->selectedPieceIndex = index;
 }
 
@@ -75,20 +73,17 @@ bool Board::isNeighbour(int index) const
 
 void Board::swapPieces(int index)
 {
-    // TODO: add animation on swap (piece state::SWAPPING ?)
-
     Piece* selected = this->pieces.at(this->selectedPieceIndex);
     Piece* otherPiece = this->pieces.at(index);
 
-    sf::Vector2f temp = selected->getPosition();
-    selected->setPosition(otherPiece->getPosition());
-    otherPiece->setPosition(temp);
+    selected->setTargetPosition(otherPiece->getPosition());
+    selected->setStatus(PieceState::SWAPPING);
+    otherPiece->setTargetPosition(selected->getPosition());
+    otherPiece->setStatus(PieceState::SWAPPING);
 
     Piece* tempPiece = selected;
     this->pieces.at(this->selectedPieceIndex) = otherPiece;
     this->pieces.at(index) = tempPiece;
-
-    selected->setStatus(PieceState::NONE);
 }
 
 void Board::checkForMatches()
@@ -103,13 +98,15 @@ void Board::checkForMatches()
     Handle out-of-board errors as 'not the same'.
 
     When you finish the 8th column, move down a row.
-
     **/
 
     // x x x x x x
     // x x x x x x
     // x x x x x x
     // x x x x x x
+
+    if (this->state == BoardState::WAITING)
+        return;
 
     for (int i = 0; i < this->pieces.size(); i++) {
         if (i % width <= width - 2 &&  this->pieces.at(i)->getType() == this->pieces.at(i + 1)->getType()) {
@@ -131,12 +128,31 @@ void Board::checkForMatches()
         }
     }
 
+    int removed = 0;
     for (int i = 0; i < this->pieces.size(); i++) {
         if (this->pieces.at(i)->getStatus() == PieceState::MATCHED) {
             auto position = this->pieces.at(i)->getPosition();
             this->pieces.erase(this->pieces.begin() + i);
             this->pieces.insert(this->pieces.begin() + i, new Piece(this->random(this->rng), std::make_pair(position.x / 60, position.y / 60)));
             std::cout << "------- Piece removed -------" << std::endl;
+            removed++;
         }
     }
+}
+
+const bool Board::isWaiting()
+{
+    for (const auto& piece : this->pieces) {
+        if (piece->getStatus() == PieceState::SWAPPING)
+            return true;
+    }
+    return false;
+}
+
+void Board::update()
+{
+    if (this->state == BoardState::WAITING && !this->isWaiting())
+        this->setState(BoardState::NORMAL);
+
+    this->checkForMatches();
 }

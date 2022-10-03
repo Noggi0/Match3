@@ -26,6 +26,7 @@ void Renderer::draw(std::vector<Piece *> pieces)
     window->clear();
     window->setTitle("Match 3 - " + std::to_string(1000 / this->frametime) + " FPS");
     for (auto& piece : pieces) {
+        piece->update();
         window->draw(*piece->getSprite());
     }
     window->display();

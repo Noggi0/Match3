@@ -12,7 +12,8 @@
 enum PieceState {
     NONE,
     SELECTED, // The piece is selected
-    MATCHED // The piece is in a match. Waiting for deletion,
+    MATCHED, // The piece is in a match. Waiting for deletion,
+	SWAPPING // The piece is swapping with another piece
 };
 
 class Piece
@@ -28,6 +29,9 @@ class Piece
 		const bool isSelected() const;
 		void setStatus(PieceState state);
 		const PieceState getStatus() const;
+		void setTargetPosition(sf::Vector2f pos);
+		const sf::Vector2f getTargetPosition() const;
+		void update();
 		~Piece() = default;
 	private:
 		int type;
@@ -35,6 +39,7 @@ class Piece
 		std::unique_ptr<sf::Sprite> sprite;
 		std::unique_ptr<sf::Texture> texture;
 		PieceState state = NONE;
+		sf::Vector2f targetPosition = {-1, -1};
 };
 
 #endif /* __PIECE_HPP__ */

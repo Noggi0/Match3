@@ -63,3 +63,30 @@ void Piece::setPosition(sf::Vector2f pos)
 	this->sprite->setPosition(pos);
 	this->position = std::make_pair(pos.x, pos.y);
 }
+
+void Piece::update()
+{
+	if (this->state != PieceState::SWAPPING)
+		return;
+
+	if (static_cast<int>(this->getPosition().x) != this->targetPosition.x || static_cast<int>(this->getPosition().y) != this->targetPosition.y) {
+		if (this->getPosition().x < this->targetPosition.x)
+			this->sprite->move(1, 0);
+		else if (this->getPosition().x > this->targetPosition.x)
+			this->sprite->move(-1, 0);
+		if (this->getPosition().y < this->targetPosition.y)
+			this->sprite->move(0, 1);
+		else if (this->getPosition().y > this->targetPosition.y)
+			this->sprite->move(0, -1);
+	}
+	else {
+		std::cout << "Finished swapping" << std::endl;
+		this->state = PieceState::NONE;
+		this->targetPosition = {-1, -1};
+	}
+}
+
+void Piece::setTargetPosition(sf::Vector2f pos)
+{
+	this->targetPosition = pos;
+}

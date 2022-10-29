@@ -80,7 +80,6 @@ void Piece::update()
 			this->sprite->move(0, -1);
 	}
 	else {
-		std::cout << "Finished swapping" << std::endl;
 		this->state = PieceState::NONE;
 		this->targetPosition = {-1, -1};
 	}
@@ -89,4 +88,9 @@ void Piece::update()
 void Piece::setTargetPosition(sf::Vector2f pos)
 {
 	this->targetPosition = pos;
+}
+
+const sf::Vector2f Piece::getTargetPosition() const
+{
+	return this->targetPosition;
 }

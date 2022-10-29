@@ -14,6 +14,7 @@ Board::Board(int width, int height, int typesNb)
     std::random_device device;
     this->rng = std::mt19937(device());
     this->random = std::uniform_int_distribution<std::mt19937::result_type>(0, 7);
+    this->score = 0;
 }
 
 void Board::populate()
@@ -114,7 +115,6 @@ void Board::checkForMatches()
                 this->pieces.at(i)->setStatus(PieceState::MATCHED);
                 this->pieces.at(i + 1)->setStatus(PieceState::MATCHED);
                 this->pieces.at(i + 2)->setStatus(PieceState::MATCHED);
-                std::cout << "Horizontal 3match" << std::endl;
             }
         }
 
@@ -123,21 +123,19 @@ void Board::checkForMatches()
                 this->pieces.at(i)->setStatus(PieceState::MATCHED);
                 this->pieces.at(i + width)->setStatus(PieceState::MATCHED);
                 this->pieces.at(i + (width * 2))->setStatus(PieceState::MATCHED);
-                std::cout << "Vertical match" << std::endl;
             }
         }
     }
 
-    int removed = 0;
     for (int i = 0; i < this->pieces.size(); i++) {
         if (this->pieces.at(i)->getStatus() == PieceState::MATCHED) {
             auto position = this->pieces.at(i)->getPosition();
             this->pieces.erase(this->pieces.begin() + i);
             this->pieces.insert(this->pieces.begin() + i, new Piece(this->random(this->rng), std::make_pair(position.x / 60, position.y / 60)));
-            std::cout << "------- Piece removed -------" << std::endl;
-            removed++;
+            this->score += 10;
         }
     }
+    std::cout << "Score: " << this->score << std::endl;
 }
 
 const bool Board::isWaiting()

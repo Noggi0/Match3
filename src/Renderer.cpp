@@ -29,6 +29,10 @@ void Renderer::draw(std::vector<Piece *> pieces)
         piece->update();
         window->draw(*piece->getSprite());
     }
+}
+
+void Renderer::display()
+{
     window->display();
 }
 

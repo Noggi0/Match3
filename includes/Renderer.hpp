@@ -17,6 +17,7 @@ class Renderer
     public:
         Renderer();
         void draw(std::vector<Piece *> pieces);
+        void display();
         sf::RenderWindow* getWindow() const;
         void setWindowSize(int width, int height);
         void setFramerate(int framerate);

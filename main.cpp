@@ -26,6 +26,7 @@ int main()
         }
         board->update();
         renderer->draw(board->getPieces());
+        renderer->display();
     }
     return 0;
 }

@@ -41,6 +41,7 @@ class Board
         int selectedPieceIndex = -1;
         std::mt19937 rng;
         std::uniform_int_distribution<std::mt19937::result_type> random;
+        unsigned int score;
 };
 
 #endif /* __BOARD_HPP__ */

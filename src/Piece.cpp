@@ -19,8 +19,7 @@ Piece::Piece(int type, std::pair<int, int> position)
 	this->sprite = std::make_unique<sf::Sprite>();
 	this->sprite->setTexture(*this->texture);
 	this->sprite->setScale(0.1f, 0.1f);
-	this->sprite->setPosition(this->position.first * 60, this->position.second * 60);
-	std::cout << "------- Piece created -------" << std::endl;
+	this->sprite->setPosition(this->position.first, this->position.second);
 }
 
 const int Piece::getType() const
@@ -69,7 +68,8 @@ void Piece::update()
 	if (this->state != PieceState::SWAPPING)
 		return;
 
-	if (static_cast<int>(this->getPosition().x) != this->targetPosition.x || static_cast<int>(this->getPosition().y) != this->targetPosition.y) {
+	if (static_cast<int>(this->getPosition().x) != this->targetPosition.x || static_cast<int>(this->getPosition().y) != this->targetPosition.y)
+	{
 		if (this->getPosition().x < this->targetPosition.x)
 			this->sprite->move(1, 0);
 		else if (this->getPosition().x > this->targetPosition.x)
@@ -79,7 +79,8 @@ void Piece::update()
 		else if (this->getPosition().y > this->targetPosition.y)
 			this->sprite->move(0, -1);
 	}
-	else {
+	else
+	{
 		this->state = PieceState::NONE;
 		this->targetPosition = {-1, -1};
 	}

@@ -11,12 +11,14 @@ int main()
 {
     std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
     std::unique_ptr<Board> board = std::make_unique<Board>(8, 4);
-    board->populate();
+    board->initBoard();
 
-    while (renderer->getWindow()->isOpen()) {
+    while (renderer->getWindow()->isOpen())
+    {
         sf::Event event;
 
-        while (renderer->getWindow()->pollEvent(event)) {
+        while (renderer->getWindow()->pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 renderer->getWindow()->close();
             else if (event.type == sf::Event::MouseButtonReleased)
@@ -25,7 +27,7 @@ int main()
                 renderer->getWindow()->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
         }
         board->update();
-        renderer->draw(board->getPieces());
+        renderer->draw(board->getPieces(), board->getBoardBackground());
         renderer->display();
     }
     return 0;

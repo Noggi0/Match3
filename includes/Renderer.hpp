@@ -16,7 +16,7 @@ class Renderer
 {
     public:
         Renderer();
-        void draw(std::vector<Piece *> pieces);
+        void draw(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground);
         void display();
         sf::RenderWindow* getWindow() const;
         void setWindowSize(int width, int height);

@@ -20,7 +20,6 @@ enum PieceState {
 class Piece : public Drawable
 {
 	// TODO: Load qu'une seule texture, au lieu de load la texture a chaque fois qu'on a une pi�ce.
-	// TODO: Derive de Drawable i guess ? �a rendrait le draw call g�n�rique
 	public:
 		Piece(int type, std::pair<int, int> position);
 		const int getType() const;
@@ -37,8 +36,6 @@ class Piece : public Drawable
 	private:
 		int type;
 		std::pair<int, int> position;
-		//std::unique_ptr<sf::Sprite> sprite;
-		//std::unique_ptr<sf::Texture> texture;
 		PieceState state = NONE;
 		sf::Vector2f targetPosition = {-1, -1};
 };

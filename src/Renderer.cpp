@@ -13,7 +13,7 @@ Renderer::Renderer()
     std::cout << "------- Renderer created -------" << std::endl;
 }
 
-void Renderer::draw(std::vector<Piece *> pieces)
+void Renderer::draw(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground)
 {
     this->newTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     this->frametime = this->newTime - this->currentTime;
@@ -25,7 +25,10 @@ void Renderer::draw(std::vector<Piece *> pieces)
 
     window->clear();
     window->setTitle("Match 3 - " + std::to_string(1000 / this->frametime) + " FPS");
-    for (auto& piece : pieces) {
+    for (const auto& drawable : boardBackground)
+        window->draw(*drawable->getSprite());
+    for (const auto& piece : pieces)
+    {
         piece->update();
         window->draw(*piece->getSprite());
     }

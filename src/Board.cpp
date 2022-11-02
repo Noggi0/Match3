@@ -7,72 +7,72 @@
 #include <iostream>
 
 Board::Board(int width, int height, int typesNb)
-    : width(std::move(width)), height(std::move(height)), typesNb(std::move(typesNb))
+    : mWidth(std::move(width)), mHeight(std::move(height)), mTypesNb(std::move(typesNb))
 {
     std::cout << "------- Board created -------" << std::endl;
-    this->state = BoardState::NORMAL;
+    this->mState = BoardState::NORMAL;
     std::random_device device;
-    this->rng = std::mt19937(device());
-    this->random = std::uniform_int_distribution<std::mt19937::result_type>(0, 7);
-    this->score = 0;
-    int offsetX = (WIDTH / 2) - (35 * this->width);
-    int offsetY = (HEIGHT / 2) - (35 * this->height);
-    this->boardPosition = { offsetX, offsetY };
+    this->mRng = std::mt19937(device());
+    this->mRandom = std::uniform_int_distribution<std::mt19937::result_type>(0, 7);
+    this->mScore = 0;
+    int offsetX = (WIDTH / 2) - (35 * this->mWidth);
+    int offsetY = (HEIGHT / 2) - (35 * this->mHeight);
+    this->mBoardPosition = { offsetX, offsetY };
 }
 
 void Board::initBoard()
 {
-    for (int i = 0; i < height; i++)
+    for (int i = 0; i < mHeight; i++)
     {
-        for (int y = 0; y < width; y++)
+        for (int y = 0; y < mWidth; y++)
         {
-            std::pair<int, int> position = std::make_pair(boardPosition.x + (70 * y), boardPosition.y + (70 * i));
-            this->pieces.push_back(new Piece(this->random(this->rng), position));
+            std::pair<int, int> position = std::make_pair(mBoardPosition.x + (70 * y), mBoardPosition.y + (70 * i));
+            mPieces.push_back(new Piece(mRandom(this->mRng), position));
 
             Drawable* boardBackgroundElement = new Drawable();
             if (!boardBackgroundElement->loadSprite(ASSETS_PATH + "/stone background.png"))
                 throw std::runtime_error("Couldn't load stone background sprite");
             boardBackgroundElement->setScale(0.14f, 0.14f);
             boardBackgroundElement->setPosition(position.first - 10, position.second - 10);
-            this->boardBackground.push_back(std::move(boardBackgroundElement));
+            mBoardBackground.push_back(std::move(boardBackgroundElement));
         }
     }
 }
 
 const std::vector<Piece *> Board::getPieces() const
 {
-    return this->pieces;
+    return mPieces;
 }
 
 const std::vector<Drawable*> Board::getBoardBackground() const
 {
-    return this->boardBackground;
+    return mBoardBackground;
 }
 
 const BoardState Board::getState() const
 {
-    return this->state;
+    return mState;
 }
 
 void Board::setState(BoardState state)
 {
-    this->state = state;
+    mState = state;
 }
 
 const int Board::getSelectedPieceIndex() const
 {
-    return this->selectedPieceIndex;
+    return mSelectedPieceIndex;
 }
 
 void Board::setSelectedPieceIndex(int index)
 {
-    this->selectedPieceIndex = index;
+    mSelectedPieceIndex = index;
 }
 
 bool Board::isNeighbour(int index) const
 {
-    Piece* neighbour = this->pieces.at(index);
-    Piece* selected = this->pieces.at(this->selectedPieceIndex);
+    Piece* neighbour = mPieces.at(index);
+    Piece* selected = mPieces.at(mSelectedPieceIndex);
 
     // Neighbours are the pieces around x like:
     //       y+1
@@ -92,19 +92,19 @@ bool Board::isNeighbour(int index) const
 
 void Board::swapPieces(int selectedPieceIndex, int index)
 {
-    Piece* selected = this->pieces.at(selectedPieceIndex);
-    Piece* otherPiece = this->pieces.at(index);
+    Piece* selected = mPieces.at(selectedPieceIndex);
+    Piece* otherPiece = mPieces.at(index);
 
     selected->setTargetPosition(otherPiece->getPosition());
     selected->setStatus(PieceState::SWAPPING);
     otherPiece->setTargetPosition(selected->getPosition());
     otherPiece->setStatus(PieceState::SWAPPING);
 
-    this->lastMovedPiecesIndex = std::make_pair(selectedPieceIndex, index);
+    mLastMovedPiecesIndex = std::make_pair(selectedPieceIndex, index);
 
     Piece* tempPiece = selected;
-    this->pieces.at(this->selectedPieceIndex) = otherPiece;
-    this->pieces.at(index) = tempPiece;
+    mPieces.at(mSelectedPieceIndex) = otherPiece;
+    mPieces.at(index) = tempPiece;
 }
 
 bool Board::checkForMatches()
@@ -128,51 +128,51 @@ bool Board::checkForMatches()
 
     bool matched = false;
 
-    if (this->state == BoardState::WAITING)
+    if (mState == BoardState::WAITING)
         return false;
 
-    for (int i = 0; i < this->pieces.size(); i++)
+    for (int i = 0; i < mPieces.size(); i++)
     {
-        if (i % width < width - 2 &&  this->pieces.at(i)->getType() == this->pieces.at(i + 1)->getType())
+        if (i % mWidth < mWidth - 2 &&  mPieces.at(i)->getType() == mPieces.at(i + 1)->getType())
         {
-            if (this->pieces.at(i)->getType() == this->pieces.at(i + 2)->getType())
+            if (mPieces.at(i)->getType() == mPieces.at(i + 2)->getType())
             {
-                this->pieces.at(i)->setStatus(PieceState::MATCHED);
-                this->pieces.at(i + 1)->setStatus(PieceState::MATCHED);
-                this->pieces.at(i + 2)->setStatus(PieceState::MATCHED);
+                mPieces.at(i)->setStatus(PieceState::MATCHED);
+                mPieces.at(i + 1)->setStatus(PieceState::MATCHED);
+                mPieces.at(i + 2)->setStatus(PieceState::MATCHED);
                 matched = true;
             }
         }
 
-        if ((i / width) < height - 2 && (this->pieces.at(i)->getType() == this->pieces.at(i + width)->getType()))
+        if ((i / mWidth) < mHeight - 2 && (mPieces.at(i)->getType() == mPieces.at(i + mWidth)->getType()))
         {
-            if (this->pieces.at(i)->getType() == this->pieces.at(i + (width * 2))->getType())
+            if (mPieces.at(i)->getType() == mPieces.at(i + (mWidth * 2))->getType())
             {
-                this->pieces.at(i)->setStatus(PieceState::MATCHED);
-                this->pieces.at(i + width)->setStatus(PieceState::MATCHED);
-                this->pieces.at(i + (width * 2))->setStatus(PieceState::MATCHED);
+                mPieces.at(i)->setStatus(PieceState::MATCHED);
+                mPieces.at(i + mWidth)->setStatus(PieceState::MATCHED);
+                mPieces.at(i + (mWidth * 2))->setStatus(PieceState::MATCHED);
                 matched = true;
             }
         }
     }
 
-    for (int i = 0; i < this->pieces.size(); i++)
+    for (int i = 0; i < mPieces.size(); i++)
     {
-        if (this->pieces.at(i)->getStatus() == PieceState::MATCHED)
+        if (mPieces.at(i)->getStatus() == PieceState::MATCHED)
         {
-            auto position = this->pieces.at(i)->getPosition();
-            this->pieces.erase(this->pieces.begin() + i);
-            this->pieces.insert(this->pieces.begin() + i, new Piece(this->random(this->rng), std::make_pair(position.x, position.y)));
-            this->score += 10;
+            auto position = mPieces.at(i)->getPosition();
+            mPieces.erase(mPieces.begin() + i);
+            mPieces.insert(mPieces.begin() + i, new Piece(mRandom(mRng), std::make_pair(position.x, position.y)));
+            mScore += 10;
         }
     }
-    std::cout << "Score: " << this->score << std::endl;
+    std::cout << "Score: " << mScore << std::endl;
     return matched;
 }
 
 const bool Board::isWaiting()
 {
-    for (const auto& piece : this->pieces)
+    for (const auto& piece : mPieces)
     {
         if (piece->getStatus() == PieceState::SWAPPING)
             return true;
@@ -182,12 +182,12 @@ const bool Board::isWaiting()
 
 void Board::update()
 {
-    if (this->state == BoardState::WAITING && !this->isWaiting())
+    if (mState == BoardState::WAITING && !this->isWaiting())
     {
         this->setState(BoardState::NORMAL);
         if (!this->checkForMatches())
         {
-            this->swapPieces(this->lastMovedPiecesIndex.first, this->lastMovedPiecesIndex.second);
+            this->swapPieces(mLastMovedPiecesIndex.first, mLastMovedPiecesIndex.second);
         }
     }
     else

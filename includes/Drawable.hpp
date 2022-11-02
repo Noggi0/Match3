@@ -18,8 +18,8 @@ class Drawable
 		virtual const sf::Sprite* getSprite() const;
 		~Drawable() = default;
 	protected:
-		std::unique_ptr<sf::Sprite> sprite;
-		std::unique_ptr<sf::Texture> texture;
+		std::unique_ptr<sf::Sprite> mSprite;
+		std::unique_ptr<sf::Texture> mTexture;
 };
 
 #endif /* __DRAWABLE_HPP__ */

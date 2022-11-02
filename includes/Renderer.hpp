@@ -23,11 +23,11 @@ class Renderer
         void setFramerate(int framerate);
         ~Renderer() = default;
     private:
-        std::unique_ptr<sf::RenderWindow> window;
-        double frametime;
-        double newTime;
-        double currentTime;
-        int framerate;
+        std::unique_ptr<sf::RenderWindow> mWindow;
+        double mFrametime;
+        double mNewTime;
+        double mCurrentTime;
+        int mFramerate;
 };
 
 #endif /* __RENDERER_HPP__ */

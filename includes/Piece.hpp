@@ -34,10 +34,10 @@ class Piece : public Drawable
 		void update();
 		~Piece() = default;
 	private:
-		int type;
-		std::pair<int, int> position;
-		PieceState state = NONE;
-		sf::Vector2f targetPosition = {-1, -1};
+		int mType;
+		std::pair<int, int> mPosition;
+		PieceState mState = NONE;
+		sf::Vector2f mTargetPosition = {-1, -1};
 };
 
 #endif /* __PIECE_HPP__ */

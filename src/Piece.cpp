@@ -7,91 +7,91 @@
 #include <iostream>
 
 Piece::Piece(int type, std::pair<int, int> position)
-	: type(std::move(type))
+	: mType(std::move(type))
 {
-	this->position = std::move(position);
+	mPosition = std::move(position);
 	std::string pathToAsset = ASSETS_PATH + "/" + std::to_string(type + 1) + ".png";
 
-	this->texture = std::make_unique<sf::Texture>();
-	if (!this->texture->loadFromFile(pathToAsset))
+	mTexture = std::make_unique<sf::Texture>();
+	if (!mTexture->loadFromFile(pathToAsset))
 		std::cout << "------- Error loading asset -------" << std::endl;
 
-	this->sprite = std::make_unique<sf::Sprite>();
-	this->sprite->setTexture(*this->texture);
-	this->sprite->setScale(0.1f, 0.1f);
-	this->sprite->setPosition(this->position.first, this->position.second);
+	mSprite = std::make_unique<sf::Sprite>();
+	mSprite->setTexture(*mTexture);
+	mSprite->setScale(0.1f, 0.1f);
+	mSprite->setPosition(mPosition.first, mPosition.second);
 }
 
 const int Piece::getType() const
 {
-	return this->type;
+	return mType;
 }
 
 const sf::Sprite* Piece::getSprite() const
 {
-	return this->sprite.get();
+	return mSprite.get();
 }
 
 const sf::Vector2f Piece::getPosition() const
 {
-	return this->sprite->getPosition();
+	return mSprite->getPosition();
 }
 
 void Piece::setStatus(PieceState state)
 {
-	this->state = state;
+	mState = state;
 
-	if (this->state == PieceState::SELECTED)
-		this->sprite->setScale(sf::Vector2f(0.11f, 0.11f));
+	if (mState == PieceState::SELECTED)
+		mSprite->setScale(sf::Vector2f(0.11f, 0.11f));
 	else
-		this->sprite->setScale(sf::Vector2f(0.1f, 0.1f));
+		mSprite->setScale(sf::Vector2f(0.1f, 0.1f));
 }
 
 const PieceState Piece::getStatus() const
 {
-	return this->state;
+	return mState;
 }
 
 const bool Piece::isSelected() const
 {
-	return this->state == PieceState::SELECTED;
+	return mState == PieceState::SELECTED;
 }
 
 void Piece::setPosition(sf::Vector2f pos)
 {
-	this->sprite->setPosition(pos);
-	this->position = std::make_pair(pos.x, pos.y);
+	mSprite->setPosition(pos);
+	mPosition = std::make_pair(pos.x, pos.y);
 }
 
 void Piece::update()
 {
-	if (this->state != PieceState::SWAPPING)
+	if (mState != PieceState::SWAPPING)
 		return;
 
-	if (static_cast<int>(this->getPosition().x) != this->targetPosition.x || static_cast<int>(this->getPosition().y) != this->targetPosition.y)
+	if (static_cast<int>(this->getPosition().x) != mTargetPosition.x || static_cast<int>(this->getPosition().y) != mTargetPosition.y)
 	{
-		if (this->getPosition().x < this->targetPosition.x)
-			this->sprite->move(1, 0);
-		else if (this->getPosition().x > this->targetPosition.x)
-			this->sprite->move(-1, 0);
-		if (this->getPosition().y < this->targetPosition.y)
-			this->sprite->move(0, 1);
-		else if (this->getPosition().y > this->targetPosition.y)
-			this->sprite->move(0, -1);
+		if (this->getPosition().x < mTargetPosition.x)
+			mSprite->move(1, 0);
+		else if (this->getPosition().x > mTargetPosition.x)
+			mSprite->move(-1, 0);
+		if (this->getPosition().y < mTargetPosition.y)
+			mSprite->move(0, 1);
+		else if (this->getPosition().y > mTargetPosition.y)
+			mSprite->move(0, -1);
 	}
 	else
 	{
-		this->state = PieceState::NONE;
-		this->targetPosition = {-1, -1};
+		mState = PieceState::NONE;
+		mTargetPosition = {-1, -1};
 	}
 }
 
 void Piece::setTargetPosition(sf::Vector2f pos)
 {
-	this->targetPosition = pos;
+	mTargetPosition = pos;
 }
 
 const sf::Vector2f Piece::getTargetPosition() const
 {
-	return this->targetPosition;
+	return mTargetPosition;
 }

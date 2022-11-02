@@ -7,7 +7,7 @@
 #include <iostream>
 
 Renderer::Renderer()
-    : window(std::make_unique<sf::RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), "Match 3")), frametime(0.0f), newTime(0.0f), currentTime(0.0f)
+    : mWindow(std::make_unique<sf::RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), "Match 3")), mFrametime(0.0f), mNewTime(0.0f), mCurrentTime(0.0f)
 {
     this->setFramerate(144);
     std::cout << "------- Renderer created -------" << std::endl;
@@ -15,42 +15,42 @@ Renderer::Renderer()
 
 void Renderer::draw(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground)
 {
-    this->newTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    this->frametime = this->newTime - this->currentTime;
+    mNewTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    mFrametime = mNewTime - mCurrentTime;
 
-    if (this->frametime < 1.0f / this->framerate)
+    if (mFrametime < 1.0f / mFramerate)
         return;
 
-    this->currentTime = this->newTime;
+    mCurrentTime = mNewTime;
 
-    window->clear();
-    window->setTitle("Match 3 - " + std::to_string(1000 / this->frametime) + " FPS");
+    mWindow->clear();
+    mWindow->setTitle("Match 3 - " + std::to_string(1000 / mFrametime) + " FPS");
     for (const auto& drawable : boardBackground)
-        window->draw(*drawable->getSprite());
+        mWindow->draw(*drawable->getSprite());
     for (const auto& piece : pieces)
     {
         piece->update();
-        window->draw(*piece->getSprite());
+        mWindow->draw(*piece->getSprite());
     }
 }
 
 void Renderer::display()
 {
-    window->display();
+    mWindow->display();
 }
 
 void Renderer::setWindowSize(int width, int height)
 {
-    window->setSize(sf::Vector2u(width, height));
+    mWindow->setSize(sf::Vector2u(width, height));
 }
 
 sf::RenderWindow* Renderer::getWindow() const
 {
-    return window.get();
+    return mWindow.get();
 }
 
 void Renderer::setFramerate(int framerate)
 {
-    window->setFramerateLimit(framerate);
-    this->framerate = std::move(framerate);
+    mWindow->setFramerateLimit(framerate);
+    mFramerate = std::move(framerate);
 }

@@ -22,6 +22,7 @@ bool Drawable::loadSprite(std::string filename)
 
 	this->sprite = std::make_unique<sf::Sprite>();
 	this->sprite->setTexture(*this->texture);
+	return true;
 }
 
 const sf::Sprite* Drawable::getSprite() const

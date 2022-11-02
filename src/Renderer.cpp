@@ -13,7 +13,7 @@ Renderer::Renderer()
     std::cout << "------- Renderer created -------" << std::endl;
 }
 
-void Renderer::draw(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground)
+void Renderer::drawLevel(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground)
 {
     mNewTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     mFrametime = mNewTime - mCurrentTime;

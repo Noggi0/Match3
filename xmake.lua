@@ -1,8 +1,8 @@
 -- Match 3 game --
 -- Made by Vincent Son --
 
-set_project("Match 3")
-set_languages("c++17")
+set_project("Match3")
+set_languages("cxx17")
 
 if is_mode("release") then
     set_optimize("fastest")

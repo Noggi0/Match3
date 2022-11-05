@@ -12,7 +12,7 @@ class Drawable
 {
 	public:
 		Drawable() = default;
-		virtual bool loadSprite(std::string filename);
+		virtual bool loadSprite(const std::string &filename);
 		virtual void setPosition(int x, int y);
 		virtual void setScale(float x, float y);
 		virtual const sf::Sprite* getSprite() const;

@@ -9,6 +9,8 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-void handleMouseClicks(sf::Event* event, Board* board);
+void handleMouseClicksForLevel(sf::Event* event, Board* board);
+
+void handleMouseClicksForMainMenu(sf::Event* event, const std::vector<Drawable*> &menuElements);
 
 #endif /* __EVENT_HANDLING__ */

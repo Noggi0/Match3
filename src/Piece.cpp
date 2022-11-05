@@ -7,7 +7,7 @@
 #include <iostream>
 
 Piece::Piece(int type, std::pair<int, int> position)
-	: mType(std::move(type))
+	: mType(type)
 {
 	mPosition = std::move(position);
 	std::string pathToAsset = ASSETS_PATH + "/" + std::to_string(type + 1) + ".png";

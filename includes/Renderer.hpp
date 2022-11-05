@@ -16,9 +16,12 @@ class Renderer
 {
     public:
         Renderer();
-        void drawLevel(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground);
+        void drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground);
+        void drawMenu(const std::vector<Drawable*> &menuElements);
+        void initNewFrame();
         void display();
         sf::RenderWindow* getWindow() const;
+        const sf::Vector2i getWindowCenter() const;
         void setWindowSize(int width, int height);
         void setFramerate(int framerate);
         ~Renderer() = default;

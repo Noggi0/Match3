@@ -32,6 +32,7 @@ class Board
         void swapPieces(int selectedPieceIndex, int index);
         bool checkForMatches();
         const bool isWaiting();
+        void shuffleBoard();
         void update();
         ~Board() = default;
     private:

@@ -7,7 +7,7 @@
 #include <iostream>
 
 Board::Board(int width, int height, int typesNb)
-    : mWidth(std::move(width)), mHeight(std::move(height)), mTypesNb(std::move(typesNb))
+    : mWidth(width), mHeight(height), mTypesNb(typesNb)
 {
     std::cout << "------- Board created -------" << std::endl;
     this->mState = BoardState::NORMAL;
@@ -126,6 +126,8 @@ bool Board::checkForMatches()
     // x x x x x x
     // x x x x x x
 
+    // TODO: Allow different matching patterns.
+
     bool matched = false;
 
     if (mState == BoardState::WAITING)
@@ -193,5 +195,18 @@ void Board::update()
     else
     {
         this->checkForMatches();
+    }
+}
+
+void Board::shuffleBoard()
+{
+    std::shuffle(mPieces.begin(), mPieces.end(), mRng);
+
+    // Update positions of pieces after shuffling.
+    for (int i = 0; i < mHeight; i++) {
+        for (int j = 0; j < mWidth; j++) {
+            sf::Vector2f position = {static_cast<float>(mBoardPosition.x + (70 * j)), static_cast<float>(mBoardPosition.y + (70 * i))};
+            mPieces.at(i * mWidth + j)->setPosition(position);
+        }
     }
 }

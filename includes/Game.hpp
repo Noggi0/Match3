@@ -7,8 +7,10 @@
 
 #include "Renderer.hpp"
 #include "EventHandling.hpp"
+#include "Buttons.hpp"
 #include "Board.hpp"
 #include <memory>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 enum class GameState
@@ -26,6 +28,7 @@ class Game
         const GameState getGameState() const;
         void setGameState(GameState state);
         void startLevel();
+        void loadMainMenuElements();
         void renderMainMenu();
         void update();
         ~Game() = default;
@@ -33,6 +36,7 @@ class Game
         GameState mState;
         std::unique_ptr<Renderer> mRenderer;
         std::unique_ptr<Board> mBoard;
+        std::vector<Drawable*> mMainMenuElements;
 };
 
 #endif /* __GAME_HPP__ */

@@ -9,6 +9,7 @@ Game::Game()
 {
     mRenderer = std::make_unique<Renderer>();
     mBoard = std::make_unique<Board>(8, 4);
+    loadMainMenuElements();
 }
 
 const GameState Game::getGameState() const
@@ -31,21 +32,37 @@ void Game::update()
 {
     while (mRenderer->getWindow()->isOpen())
     {
-        sf::Event event;
+        sf::Event event {};
         
         while (mRenderer->getWindow()->pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 mRenderer->getWindow()->close();
             else if (event.type == sf::Event::MouseButtonReleased)
-                handleMouseClicks(&event, mBoard.get());
+            {
+                if (mState == GameState::PLAYING)
+                    handleMouseClicksForLevel(&event, mBoard.get());
+                else if (mState == GameState::MAIN_MENU)
+                    handleMouseClicksForMainMenu(&event, mMainMenuElements);
+            }
             else if (event.type == sf::Event::Resized)
                 mRenderer->getWindow()->setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::M)
+                    mState = GameState::MAIN_MENU;
+                else if (event.key.code == sf::Keyboard::P)
+                    mState = GameState::PLAYING;
+                else if (event.key.code == sf::Keyboard::R)
+                    mBoard->shuffleBoard();
+                else if (event.key.code == sf::Keyboard::Escape)
+                    mRenderer->getWindow()->close();
+            }
         }
         switch (mState)
         {
             case GameState::MAIN_MENU:
-                // renderMainMenu();
+                renderMainMenu();
                 break;
             case GameState::PLAYING:
                 mBoard->update();
@@ -59,4 +76,43 @@ void Game::update()
                 break;
         }
     }
+}
+
+void Game::renderMainMenu()
+{
+    mRenderer->drawMenu(mMainMenuElements);
+    mRenderer->display();
+}
+
+void Game::loadMainMenuElements()
+{
+    int x, y;
+    auto *background = new Drawable();
+    background->loadSprite(ASSETS_PATH + "/background.png");
+    background->setPosition(0, 0);
+    mMainMenuElements.push_back(background);
+
+    auto *playButton = new Button();
+    playButton->loadSprite(ASSETS_PATH + "/Play Button.png");
+    x = (mRenderer->getWindow()->getSize().x / 2) - (playButton->getSprite()->getGlobalBounds().width / 2);
+    y = 0;
+    playButton->setPosition(x, y);
+    playButton->setCallback([this](){ mState = GameState::PLAYING; });
+    mMainMenuElements.push_back(playButton);
+
+    auto *settingsButton = new Button();
+    settingsButton->loadSprite(ASSETS_PATH + "/Settings Button.png");
+    x = (mRenderer->getWindow()->getSize().x / 2) - (settingsButton->getSprite()->getGlobalBounds().width / 2);
+    y = playButton->getSprite()->getGlobalBounds().height + 10;
+    settingsButton->setPosition(x, y);
+    settingsButton->setCallback([this](){ mState = GameState::PAUSED; std::cout << "PAUSED" << std::endl; });
+    mMainMenuElements.push_back(settingsButton);
+
+    auto *quitButton = new Button();
+    quitButton->loadSprite(ASSETS_PATH + "/Quit Button.png");
+    x = (mRenderer->getWindow()->getSize().x / 2) - (quitButton->getSprite()->getGlobalBounds().width / 2);
+    y = settingsButton->getSprite()->getGlobalBounds().height + settingsButton->getSprite()->getGlobalBounds().top + 10;
+    quitButton->setPosition(x, y);
+    quitButton->setCallback([this](){ this->mRenderer->getWindow()->close(); });
+    mMainMenuElements.push_back(quitButton);
 }

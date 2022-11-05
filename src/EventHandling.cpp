@@ -3,9 +3,10 @@
  */
 
 #include "../includes/EventHandling.hpp"
+#include "../includes/Buttons.hpp"
 #include <iostream>
 
-void handleMouseClicks(sf::Event* event, Board* board)
+void handleMouseClicksForLevel(sf::Event* event, Board* board)
 {
 	int x = event->mouseButton.x;
 	int y = event->mouseButton.y;
@@ -40,4 +41,30 @@ void handleMouseClicks(sf::Event* event, Board* board)
 		}
 		index++;
 	}
+}
+
+void handleMouseClicksForMainMenu(sf::Event* event, const std::vector<Drawable*> &menuElements)
+{
+    int x = event->mouseButton.x;
+    int y = event->mouseButton.y;
+
+    int index = 0;
+    for (const auto &element : menuElements)
+    {
+        if (index == 0)
+        {
+            index++;
+            continue;
+        }
+
+        auto* button = dynamic_cast<Button*>(element);
+
+        auto globalBounds = element->getSprite()->getGlobalBounds();
+
+        if (globalBounds.contains(x, y))
+        {
+            button->clicked();
+        }
+        index++;
+    }
 }

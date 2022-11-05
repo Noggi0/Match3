@@ -13,7 +13,28 @@ Renderer::Renderer()
     std::cout << "------- Renderer created -------" << std::endl;
 }
 
-void Renderer::drawLevel(std::vector<Piece *> pieces, std::vector<Drawable*> boardBackground)
+void Renderer::drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground)
+{
+    this->initNewFrame();
+
+    for (const auto& drawable : boardBackground)
+        mWindow->draw(*drawable->getSprite());
+    for (const auto& piece : pieces)
+    {
+        piece->update();
+        mWindow->draw(*piece->getSprite());
+    }
+}
+
+void Renderer::drawMenu(const std::vector<Drawable *> &menuElements)
+{
+    this->initNewFrame();
+
+    for (const auto& drawable : menuElements)
+        mWindow->draw(*drawable->getSprite());
+}
+
+void Renderer::initNewFrame()
 {
     mNewTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     mFrametime = mNewTime - mCurrentTime;
@@ -25,13 +46,6 @@ void Renderer::drawLevel(std::vector<Piece *> pieces, std::vector<Drawable*> boa
 
     mWindow->clear();
     mWindow->setTitle("Match 3 - " + std::to_string(1000 / mFrametime) + " FPS");
-    for (const auto& drawable : boardBackground)
-        mWindow->draw(*drawable->getSprite());
-    for (const auto& piece : pieces)
-    {
-        piece->update();
-        mWindow->draw(*piece->getSprite());
-    }
 }
 
 void Renderer::display()
@@ -53,4 +67,13 @@ void Renderer::setFramerate(int framerate)
 {
     mWindow->setFramerateLimit(framerate);
     mFramerate = std::move(framerate);
+}
+
+const sf::Vector2i Renderer::getWindowCenter() const
+{
+#ifdef __APPLE__
+    return sf::Vector2i(mWindow->getSize().x / 2, mWindow->getSize().y / 2);
+#else
+    return sf::Vector2i(mWindow->getSize().x, mWindw->getSize().y);
+#endif
 }

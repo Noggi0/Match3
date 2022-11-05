@@ -14,7 +14,7 @@ void Drawable::setPosition(int x, int y)
 	mSprite->setPosition(sf::Vector2f(x, y));
 }
 
-bool Drawable::loadSprite(std::string filename)
+bool Drawable::loadSprite(const std::string &filename)
 {
 	mTexture = std::make_unique<sf::Texture>();
 	if (!mTexture->loadFromFile(filename))

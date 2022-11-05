@@ -15,7 +15,13 @@
 #endif
 
 /* Window Size */
-constexpr int WIDTH = 800;
-constexpr int HEIGHT = 600;
+#ifdef __APPLE__
+    constexpr int WIDTH = 800 * 2;
+    constexpr int HEIGHT = 600 * 2;
+#elif _WIN32
+    constexpr int WIDTH = 800;
+    constexpr int HEIGHT = 600;
+#endif
+
 
 #endif /* __DEFINES_HPP__ */

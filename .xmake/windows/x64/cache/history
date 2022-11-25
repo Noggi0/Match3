@@ -1,6 +1,0 @@
-{
-    cmdlines = {
-        [[xmake l c:\Users\vince\.vscode\extensions\tboox.xmake-vscode-1.7.5\assets\explorer.lua]],
-        [[xmake l c:\Users\vince\.vscode\extensions\tboox.xmake-vscode-1.7.5\assets\config.lua]]
-    }
-}

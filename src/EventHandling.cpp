@@ -23,6 +23,7 @@ void handleMouseClicksForLevel(sf::Event* event, Board* board)
 				piece->setStatus(PieceState::SELECTED);
 				board->setState(BoardState::SELECTING);
 				board->setSelectedPieceIndex(index);
+                break;
 			}
 			else
 			{
@@ -30,12 +31,14 @@ void handleMouseClicksForLevel(sf::Event* event, Board* board)
 				if (board->isNeighbour(index))
 				{
 					board->swapPieces(board->getSelectedPieceIndex(), index);
+                    break;
 				}
 				else
 				{
 					board->setState(BoardState::NORMAL);
 					board->getPieces().at(board->getSelectedPieceIndex())->setStatus(PieceState::NONE);
 					board->setSelectedPieceIndex(-1);
+                    break;
 				}
 			}
 		}

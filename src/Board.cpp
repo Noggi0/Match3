@@ -167,7 +167,6 @@ bool Board::checkForMatches()
             mScore += 10;
         }
     }
-    std::cout << "Score: " << mScore << std::endl;
     return matched;
 }
 

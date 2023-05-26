@@ -12,7 +12,7 @@ Game::Game()
     loadMainMenuElements();
 }
 
-const GameState Game::getGameState() const
+GameState Game::getGameState() const
 {
     return mState;
 }
@@ -58,6 +58,21 @@ void Game::update()
                 else if (event.key.code == sf::Keyboard::Escape)
                     mRenderer->getWindow()->close();
             }
+            else if (event.type == sf::Event::MouseMoved)
+            {
+                if (mState == GameState::MAIN_MENU)
+                {
+                    for (const auto &element : mMainMenuElements)
+                    {
+                        if (element == mMainMenuElements.front()) // ignore background which is always first
+                            continue;
+                        if (element->getSprite()->getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
+                            element->setScale(1.01f, 1.01f);
+                        else
+                            element->setScale(1.0f, 1.0f);
+                    }
+                }
+            }
         }
         switch (mState)
         {
@@ -66,10 +81,14 @@ void Game::update()
                 break;
             case GameState::PLAYING:
                 mBoard->update();
-                mRenderer->drawLevel(mBoard->getPieces(), mBoard->getBoardBackground());
+                mRenderer->drawLevel(mBoard->getPieces(), mBoard->getBoardBackground(), mBoard->getScore());
                 mRenderer->display();
                 break;
             case GameState::PAUSED:
+                break;
+            case GameState::SETTINGS:
+                loadSettingsMenuElements();
+                renderSettingsMenu();
                 break;
             case GameState::EXIT:
                 mRenderer->getWindow()->close();
@@ -89,12 +108,12 @@ void Game::loadMainMenuElements()
     int x, y;
     auto *background = new Drawable();
     background->loadSprite(ASSETS_PATH + "/background.png");
-    background->setPosition(0, 0);
+    background->setPosition(0, 10);
     mMainMenuElements.push_back(background);
 
     auto *playButton = new Button();
     playButton->loadSprite(ASSETS_PATH + "/Play Button.png");
-    x = (mRenderer->getWindow()->getSize().x / 2) - (playButton->getSprite()->getGlobalBounds().width / 2);
+    x = (mRenderer->getWindow()->getSize().x / 2.0f) - (playButton->getSprite()->getGlobalBounds().width / 2);
     y = 0;
     playButton->setPosition(x, y);
     playButton->setCallback([this](){ mState = GameState::PLAYING; });
@@ -115,4 +134,15 @@ void Game::loadMainMenuElements()
     quitButton->setPosition(x, y);
     quitButton->setCallback([this](){ this->mRenderer->getWindow()->close(); });
     mMainMenuElements.push_back(quitButton);
+}
+
+void Game::loadSettingsMenuElements()
+{
+    // Maybe create settings file beforehand ?
+    // Because we need to read this config file and populate fields accordingly
+}
+
+void Game::renderSettingsMenu()
+{
+
 }

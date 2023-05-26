@@ -16,7 +16,7 @@ class Renderer
 {
     public:
         Renderer();
-        void drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground);
+        void drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground, int score);
         void drawMenu(const std::vector<Drawable*> &menuElements);
         void initNewFrame();
         void display();
@@ -30,7 +30,7 @@ class Renderer
         double mFrametime;
         double mNewTime;
         double mCurrentTime;
-        int mFramerate;
+        int mFramerate{};
 };
 
 #endif /* __RENDERER_HPP__ */

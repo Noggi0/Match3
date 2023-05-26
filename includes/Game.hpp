@@ -18,6 +18,7 @@ enum class GameState
     MAIN_MENU,
     PLAYING,
     PAUSED,
+    SETTINGS,
     EXIT
 };
 
@@ -25,11 +26,13 @@ class Game
 {
     public:
         Game();
-        const GameState getGameState() const;
+        GameState getGameState() const;
         void setGameState(GameState state);
         void startLevel();
         void loadMainMenuElements();
         void renderMainMenu();
+        void loadSettingsMenuElements();
+        void renderSettingsMenu();
         void update();
         ~Game() = default;
     private:
@@ -37,6 +40,7 @@ class Game
         std::unique_ptr<Renderer> mRenderer;
         std::unique_ptr<Board> mBoard;
         std::vector<Drawable*> mMainMenuElements;
+        std::vector<Drawable* mSettingsMenuElements;
 };
 
 #endif /* __GAME_HPP__ */

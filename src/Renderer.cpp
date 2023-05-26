@@ -13,7 +13,7 @@ Renderer::Renderer()
     std::cout << "------- Renderer created -------" << std::endl;
 }
 
-void Renderer::drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground)
+void Renderer::drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground, int score)
 {
     this->initNewFrame();
 
@@ -24,6 +24,19 @@ void Renderer::drawLevel(const std::vector<Piece *>& pieces, const std::vector<D
         piece->update();
         mWindow->draw(*piece->getSprite());
     }
+
+    sf::Font font;
+    if (!font.loadFromFile(ASSETS_PATH + "arial.ttf"))
+    {
+        throw std::runtime_error("Can't load font");
+    }
+    sf::Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setString(std::to_string(score));
+    scoreText.setPosition(WIDTH / 2 - scoreText.getGlobalBounds().width / 2, 0);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setCharacterSize(42);
+    mWindow->draw(scoreText);
 }
 
 void Renderer::drawMenu(const std::vector<Drawable *> &menuElements)
@@ -66,7 +79,7 @@ sf::RenderWindow* Renderer::getWindow() const
 void Renderer::setFramerate(int framerate)
 {
     mWindow->setFramerateLimit(framerate);
-    mFramerate = std::move(framerate);
+    mFramerate = framerate;
 }
 
 const sf::Vector2i Renderer::getWindowCenter() const

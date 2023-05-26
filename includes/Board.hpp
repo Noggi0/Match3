@@ -34,6 +34,7 @@ class Board
         const bool isWaiting();
         void shuffleBoard();
         void update();
+        int getScore() const;
         ~Board() = default;
     private:
         int mWidth;

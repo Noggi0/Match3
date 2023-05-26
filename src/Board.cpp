@@ -18,6 +18,7 @@ Board::Board(int width, int height, int typesNb)
     int offsetX = (WIDTH / 2) - (35 * this->mWidth);
     int offsetY = (HEIGHT / 2) - (35 * this->mHeight);
     this->mBoardPosition = { offsetX, offsetY };
+    initBoard();
 }
 
 void Board::initBoard()
@@ -126,8 +127,6 @@ bool Board::checkForMatches()
     // x x x x x x
     // x x x x x x
 
-    // TODO: Allow different matching patterns.
-
     bool matched = false;
 
     if (mState == BoardState::WAITING)
@@ -202,11 +201,16 @@ void Board::shuffleBoard()
 {
     std::shuffle(mPieces.begin(), mPieces.end(), mRng);
 
-    // Update positions of pieces after shuffling.
+    // Update internal positions of pieces after shuffling.
     for (int i = 0; i < mHeight; i++) {
         for (int j = 0; j < mWidth; j++) {
             sf::Vector2f position = {static_cast<float>(mBoardPosition.x + (70 * j)), static_cast<float>(mBoardPosition.y + (70 * i))};
             mPieces.at(i * mWidth + j)->setPosition(position);
         }
     }
+}
+
+int Board::getScore() const
+{
+    return mScore;
 }

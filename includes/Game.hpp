@@ -40,7 +40,7 @@ class Game
         std::unique_ptr<Renderer> mRenderer;
         std::unique_ptr<Board> mBoard;
         std::vector<Drawable*> mMainMenuElements;
-        std::vector<Drawable* mSettingsMenuElements;
+        std::vector<Drawable*> mSettingsMenuElements;
 };
 
 #endif /* __GAME_HPP__ */

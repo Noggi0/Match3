@@ -24,7 +24,6 @@ void Game::setGameState(GameState state)
 
 void Game::startLevel()
 {
-    mBoard->initBoard();
     mState = GameState::PLAYING;
 }
 

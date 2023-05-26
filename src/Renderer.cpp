@@ -87,6 +87,6 @@ const sf::Vector2i Renderer::getWindowCenter() const
 #ifdef __APPLE__
     return sf::Vector2i(mWindow->getSize().x / 2, mWindow->getSize().y / 2);
 #else
-    return sf::Vector2i(mWindow->getSize().x, mWindw->getSize().y);
+    return sf::Vector2i(mWindow->getSize().x, mWindow->getSize().y);
 #endif
 }

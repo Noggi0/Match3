@@ -50,7 +50,7 @@ void Renderer::drawMenu(const std::vector<Drawable *> &menuElements)
 void Renderer::initNewFrame()
 {
     mNewTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    mFrametime = mNewTime - mCurrentTime;
+    mFrametime = (mNewTime - mCurrentTime) / 1000.0f;
 
     if (mFrametime < 1.0f / mFramerate)
         return;
@@ -58,7 +58,7 @@ void Renderer::initNewFrame()
     mCurrentTime = mNewTime;
 
     mWindow->clear();
-    mWindow->setTitle("Match 3 - " + std::to_string(1000 / mFrametime) + " FPS");
+    mWindow->setTitle("Match 3 - " + std::to_string(1.0f / mFrametime) + " FPS");
 }
 
 void Renderer::display()

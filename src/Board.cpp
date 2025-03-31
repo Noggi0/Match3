@@ -13,7 +13,7 @@ Board::Board(int width, int height, int typesNb)
     this->mState = BoardState::NORMAL;
     std::random_device device;
     this->mRng = std::mt19937(device());
-    this->mRandom = std::uniform_int_distribution<std::mt19937::result_type>(0, 7);
+    this->mRandom = std::uniform_int_distribution<std::mt19937::result_type>(0, typesNb);
     this->mScore = 0;
     int offsetX = (WIDTH / 2) - (35 * this->mWidth);
     int offsetY = (HEIGHT / 2) - (35 * this->mHeight);
@@ -23,12 +23,13 @@ Board::Board(int width, int height, int typesNb)
 
 void Board::initBoard()
 {
+    mPieces = std::vector<std::vector<Piece*>>(mHeight, std::vector<Piece*>());
     for (int i = 0; i < mHeight; i++)
     {
         for (int y = 0; y < mWidth; y++)
         {
             std::pair<int, int> position = std::make_pair(mBoardPosition.x + (70 * y), mBoardPosition.y + (70 * i));
-            mPieces.push_back(new Piece(mRandom(this->mRng), position));
+            mPieces.at(i).emplace_back(new Piece(mRandom(this->mRng), position));
 
             Drawable* boardBackgroundElement = new Drawable();
             if (!boardBackgroundElement->loadSprite(ASSETS_PATH + "/stone background.png"))
@@ -36,11 +37,37 @@ void Board::initBoard()
             boardBackgroundElement->setScale(0.14f, 0.14f);
             boardBackgroundElement->setPosition(position.first - 10, position.second - 10);
             mBoardBackground.push_back(std::move(boardBackgroundElement));
+
+            if (y == 0 || y == mWidth - 1)
+            {
+                Drawable* boardBorderElement = new Drawable();
+                if (!boardBorderElement->loadSprite(ASSETS_PATH + "/frame.png"))
+                    throw std::runtime_error("Couldn't load frame stone");
+                boardBorderElement->setScale(0.14f, 0.14f);
+                if (y == 0)
+                    boardBorderElement->setPosition(position.first - 10, position.second - 10);
+                else
+                    boardBorderElement->setPosition(position.first + 60, position.second - 10);
+                mBoardBackground.push_back(std::move(boardBorderElement));
+            }
+            if (i == 0 || i == mHeight - 1)
+            {
+                Drawable* boardBorderElement = new Drawable();
+                if (!boardBorderElement->loadSprite(ASSETS_PATH + "/frame.png"))
+                    throw std::runtime_error("Couldn't load frame stone");
+                boardBorderElement->setScale(0.14f, 0.14f);
+                if (i == 0)
+                    boardBorderElement->setPosition(position.first - 10, position.second - 10);
+                else
+                    boardBorderElement->setPosition(position.first - 10, position.second + 60);
+                boardBorderElement->setRotation(-90);
+                mBoardBackground.push_back(std::move(boardBorderElement));
+            }
         }
     }
 }
 
-const std::vector<Piece *> Board::getPieces() const
+const std::vector<std::vector<Piece*>> Board::getPieces() const
 {
     return mPieces;
 }
@@ -60,20 +87,20 @@ void Board::setState(BoardState state)
     mState = state;
 }
 
-const int Board::getSelectedPieceIndex() const
+const Coord Board::getSelectedPieceCoord() const
 {
-    return mSelectedPieceIndex;
+    return mSelectedPieceCoord;
 }
 
-void Board::setSelectedPieceIndex(int index)
+void Board::setSelectedPieceCoord(Coord index)
 {
-    mSelectedPieceIndex = index;
+    mSelectedPieceCoord = index;
 }
 
-bool Board::isNeighbour(int index) const
+bool Board::isNeighbour(Coord coords) const
 {
-    Piece* neighbour = mPieces.at(index);
-    Piece* selected = mPieces.at(mSelectedPieceIndex);
+    const Piece* neighbour = mPieces.at(coords.row).at(coords.column);
+    Piece* selected = mPieces.at(mSelectedPieceCoord.row).at(mSelectedPieceCoord.column);
 
     // Neighbours are the pieces around x like:
     //       y+1
@@ -91,21 +118,24 @@ bool Board::isNeighbour(int index) const
     return false;
 }
 
-void Board::swapPieces(int selectedPieceIndex, int index)
+void Board::swapPieces(Coord selectedPieceCoords, Coord otherPieceCoords, bool keepLastMoved)
 {
-    Piece* selected = mPieces.at(selectedPieceIndex);
-    Piece* otherPiece = mPieces.at(index);
+    Piece* selected = mPieces.at(selectedPieceCoords.row).at(selectedPieceCoords.column);
+    Piece* otherPiece = mPieces.at(otherPieceCoords.row).at(otherPieceCoords.column);
+
+    if (selected == nullptr || otherPiece == nullptr)
+        return;
 
     selected->setTargetPosition(otherPiece->getPosition());
     selected->setStatus(PieceState::SWAPPING);
     otherPiece->setTargetPosition(selected->getPosition());
     otherPiece->setStatus(PieceState::SWAPPING);
 
-    mLastMovedPiecesIndex = std::make_pair(selectedPieceIndex, index);
+    mLastMovedPiecesCoords = std::make_pair(selectedPieceCoords, otherPieceCoords);
 
     Piece* tempPiece = selected;
-    mPieces.at(mSelectedPieceIndex) = otherPiece;
-    mPieces.at(index) = tempPiece;
+    mPieces.at(mSelectedPieceCoord.row).at(mSelectedPieceCoord.column) = otherPiece;
+    mPieces.at(otherPieceCoords.row).at(otherPieceCoords.column) = tempPiece;
 }
 
 bool Board::checkForMatches()
@@ -132,53 +162,102 @@ bool Board::checkForMatches()
     if (mState == BoardState::WAITING)
         return false;
 
-    for (int i = 0; i < mPieces.size(); i++)
+    for (int row = 0; row < mPieces.size(); row++)
     {
-        if (i % mWidth < mWidth - 2 &&  mPieces.at(i)->getType() == mPieces.at(i + 1)->getType())
+        for (int col = 0; col < mPieces[row].size(); col++)
         {
-            if (mPieces.at(i)->getType() == mPieces.at(i + 2)->getType())
+            if (mPieces[row][col] == nullptr || mPieces[row][col + 1] == nullptr)
+                continue;
+            if (col < mPieces[row].size() - 2 && mPieces[row][col]->getType() == mPieces[row][col + 1]->getType())
             {
-                mPieces.at(i)->setStatus(PieceState::MATCHED);
-                mPieces.at(i + 1)->setStatus(PieceState::MATCHED);
-                mPieces.at(i + 2)->setStatus(PieceState::MATCHED);
-                matched = true;
+                if (mPieces[row][col + 2] == nullptr)
+                    continue;
+                if (mPieces[row][col]->getType() == mPieces[row][col + 2]->getType())
+                {
+                    mPieces[row][col]->setStatus(PieceState::MATCHED);
+                    mPieces[row][col + 1]->setStatus(PieceState::MATCHED);
+                    mPieces[row][col + 2]->setStatus(PieceState::MATCHED);
+                    matched = true;
+                }
             }
-        }
 
-        if ((i / mWidth) < mHeight - 2 && (mPieces.at(i)->getType() == mPieces.at(i + mWidth)->getType()))
-        {
-            if (mPieces.at(i)->getType() == mPieces.at(i + (mWidth * 2))->getType())
+            if (row >= mPieces.size() - 2)
+                continue;
+            if (mPieces[row + 1][col] == nullptr)
+                continue;
+            if (mPieces[row][col]->getType() == mPieces[row + 1][col]->getType())
             {
-                mPieces.at(i)->setStatus(PieceState::MATCHED);
-                mPieces.at(i + mWidth)->setStatus(PieceState::MATCHED);
-                mPieces.at(i + (mWidth * 2))->setStatus(PieceState::MATCHED);
-                matched = true;
+                if (mPieces[row + 2][col] == nullptr)
+                    continue;
+                if (mPieces[row][col]->getType() == mPieces[row + 2][col]->getType())
+                {
+                    mPieces[row][col]->setStatus(PieceState::MATCHED);
+                    mPieces[row + 1][col]->setStatus(PieceState::MATCHED);
+                    mPieces[row + 2][col]->setStatus(PieceState::MATCHED);
+                }
             }
         }
     }
 
-    for (int i = 0; i < mPieces.size(); i++)
+    for (int row = 0; row < mPieces.size(); row++)
     {
-        if (mPieces.at(i)->getStatus() == PieceState::MATCHED)
+        for (int col = 0; col < mPieces[row].size(); col++)
         {
-            auto position = mPieces.at(i)->getPosition();
-            mPieces.erase(mPieces.begin() + i);
-            mPieces.insert(mPieces.begin() + i, new Piece(mRandom(mRng), std::make_pair(position.x, position.y)));
-            mScore += 10;
+            if (mPieces[row][col] == nullptr)
+                continue;
+            if (mPieces[row][col]->getStatus() == PieceState::MATCHED)
+            {
+                mPieces[row][col] = nullptr;
+                mScore += 10;
+            }
         }
     }
+
     return matched;
 }
 
 const bool Board::isWaiting()
 {
-    for (const auto& piece : mPieces)
+    for (int row = 0; row < mPieces.size(); row++)
     {
-        if (piece->getStatus() == PieceState::SWAPPING)
-            return true;
+        for (int col = 0; col < mPieces[row].size(); col++)
+        {
+            if (mPieces[row][col] == nullptr)
+                continue;
+            if (mPieces[row][col]->getStatus() == PieceState::SWAPPING || mPieces[row][col]->getStatus() == PieceState::FALLING)
+                return true;
+        }
     }
     return false;
 }
+
+void Board::makePiecesFall()
+{
+    for (int row = mPieces.size() - 1; row >= 0; row--) {
+        for (int col = 0; col < mPieces[row].size(); col++) {
+            if (row >= 1)
+            {
+                if (mPieces[row][col] == nullptr && mPieces[row - 1][col] != nullptr)
+                {
+                    const sf::Vector2f newCoords = {mPieces[row - 1][col]->getPosition().x, static_cast<float>( mBoardPosition.y + ((row) * 70))};
+                    mPieces[row - 1][col]->setTargetPosition(newCoords);
+                    mPieces[row - 1][col]->setStatus(PieceState::FALLING);
+
+                    std::swap(mPieces[row][col], mPieces[row - 1][col]);
+                }
+            }
+            else
+            {
+                if (mPieces[row][col] == nullptr)
+                {
+                    std::pair<int, int> position = std::make_pair(mBoardPosition.x + (70 * col), mBoardPosition.y);
+                    mPieces[row][col] = new Piece(mRandom(this->mRng), position);
+                }
+            }
+        }
+    }
+}
+
 
 void Board::update()
 {
@@ -187,12 +266,13 @@ void Board::update()
         this->setState(BoardState::NORMAL);
         if (!this->checkForMatches())
         {
-            this->swapPieces(mLastMovedPiecesIndex.first, mLastMovedPiecesIndex.second);
+            this->swapPieces(mLastMovedPiecesCoords.first, mLastMovedPiecesCoords.second);
         }
     }
     else
     {
         this->checkForMatches();
+        this->makePiecesFall();
     }
 }
 
@@ -203,8 +283,8 @@ void Board::shuffleBoard()
     // Update internal positions of pieces after shuffling.
     for (int i = 0; i < mHeight; i++) {
         for (int j = 0; j < mWidth; j++) {
-            sf::Vector2f position = {static_cast<float>(mBoardPosition.x + (70 * j)), static_cast<float>(mBoardPosition.y + (70 * i))};
-            mPieces.at(i * mWidth + j)->setPosition(position);
+            sf::Vector2f position = { static_cast<float>(mBoardPosition.x + (70 * j)), static_cast<float>(mBoardPosition.y + (70 * i)) };
+            mPieces.at(i).at(j)->setPosition(position);
         }
     }
 }

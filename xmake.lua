@@ -12,7 +12,8 @@ elseif is_mode("debug") then
     set_symbols("debug")
 end
 
-add_requires("sfml")
+set_symbols("debug")
+add_requires("sfml 2.6.1")
 
 target("match3")
     set_kind("binary")

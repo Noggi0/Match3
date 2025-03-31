@@ -29,3 +29,8 @@ const sf::Sprite* Drawable::getSprite() const
 {
 	return mSprite.get();
 }
+
+void Drawable::setRotation(float angle)
+{
+	mSprite->rotate(angle);
+}

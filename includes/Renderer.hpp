@@ -16,7 +16,7 @@ class Renderer
 {
     public:
         Renderer();
-        void drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground, int score);
+        void drawLevel(const std::vector<std::vector<Piece *>>& pieces, const std::vector<Drawable*>& boardBackground, int score);
         void drawMenu(const std::vector<Drawable*> &menuElements);
         void initNewFrame();
         void display();

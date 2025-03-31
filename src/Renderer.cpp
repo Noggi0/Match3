@@ -13,16 +13,23 @@ Renderer::Renderer()
     std::cout << "------- Renderer created -------" << std::endl;
 }
 
-void Renderer::drawLevel(const std::vector<Piece *>& pieces, const std::vector<Drawable*>& boardBackground, int score)
+void Renderer::drawLevel(const std::vector<std::vector<Piece *>>& pieces, const std::vector<Drawable*>& boardBackground, int score)
 {
     this->initNewFrame();
 
     for (const auto& drawable : boardBackground)
         mWindow->draw(*drawable->getSprite());
-    for (const auto& piece : pieces)
+
+    for (int row = 0; row < pieces.size(); row++)
     {
-        piece->update();
-        mWindow->draw(*piece->getSprite());
+        for (int col = 0; col < pieces[row].size(); col++)
+        {
+            if (pieces[row][col] != nullptr)
+            {
+                pieces[row][col]->update();
+                mWindow->draw(*pieces[row][col]->getSprite());
+            }
+        }
     }
 
     sf::Font font;

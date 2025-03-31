@@ -15,6 +15,7 @@ class Drawable
 		virtual bool loadSprite(const std::string &filename);
 		virtual void setPosition(int x, int y);
 		virtual void setScale(float x, float y);
+		virtual void setRotation(float angle);
 		virtual const sf::Sprite* getSprite() const;
 		~Drawable() = default;
 	protected:

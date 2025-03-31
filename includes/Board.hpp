@@ -10,6 +10,11 @@
 #include <vector>
 #include <random>
 
+struct Coord {
+    int row;
+    int column;
+};
+
 enum BoardState {
     NORMAL,
     SELECTING, // A piece has been selected
@@ -22,17 +27,19 @@ class Board
         Board() = default;
         Board(int width, int height, int typesNb = 3);
         void initBoard();
-        const std::vector<Piece *> getPieces() const;
+        const std::vector<std::vector<Piece*>> getPieces() const;
         const std::vector<Drawable*> getBoardBackground() const;
         const BoardState getState() const;
         void setState(BoardState state);
-        const int getSelectedPieceIndex() const;
-        void setSelectedPieceIndex(int index);
-        bool isNeighbour(int index) const;
-        void swapPieces(int selectedPieceIndex, int index);
+        const Coord getSelectedPieceCoord() const;
+        void setSelectedPieceCoord(Coord index);
+        bool isNeighbour(Coord coords) const;
+        void swapPieces(Coord selectedPieceCoords, Coord otherPieceCoords, bool keepLastMoved = false);
         bool checkForMatches();
         const bool isWaiting();
         void shuffleBoard();
+        void makePiecesFall();
+        void fillHoles();
         void update();
         int getScore() const;
         ~Board() = default;
@@ -41,14 +48,14 @@ class Board
         int mHeight;
         int mTypesNb;
         sf::Vector2i mBoardPosition;
-        std::vector<Piece*> mPieces;
+        std::vector<std::vector<Piece*>> mPieces;
         std::vector<Drawable*> mBoardBackground;
         BoardState mState;
-        int mSelectedPieceIndex = -1;
+        Coord mSelectedPieceCoord = {-1, -1};
         std::mt19937 mRng;
         std::uniform_int_distribution<std::mt19937::result_type> mRandom;
         unsigned int mScore;
-        std::pair<int, int> mLastMovedPiecesIndex;
+        std::pair<Coord, Coord> mLastMovedPiecesCoords;
 };
 
 #endif /* __BOARD_HPP__ */

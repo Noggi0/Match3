@@ -12,37 +12,45 @@ void handleMouseClicksForLevel(sf::Event* event, Board* board)
 	int y = event->mouseButton.y;
 
 	int index = 0;
-	for (const auto &piece : board->getPieces())
-	{
-		sf::Vector2f piecePosition = piece->getPosition();
+	auto pieces = board->getPieces();
 
-		if (x > piecePosition.x && x < piecePosition.x + 60 && y > piecePosition.y && y < piecePosition.y + 60)
+	for (int row = 0; row < pieces.size(); row++)
+	{
+		for (int col = 0; col < pieces[row].size(); col++)
 		{
-			if (board->getState() != BoardState::SELECTING)
+			if (pieces[row][col] == nullptr)
+				continue;
+			sf::Vector2f piecePosition = pieces[row][col]->getPosition();
+
+			if (x > piecePosition.x && x < piecePosition.x + 60 && y > piecePosition.y && y < piecePosition.y + 60)
 			{
-				piece->setStatus(PieceState::SELECTED);
-				board->setState(BoardState::SELECTING);
-				board->setSelectedPieceIndex(index);
-                break;
-			}
-			else
-			{
-				board->setState(BoardState::WAITING);
-				if (board->isNeighbour(index))
+				if (board->getState() != BoardState::SELECTING)
 				{
-					board->swapPieces(board->getSelectedPieceIndex(), index);
-                    break;
+					pieces[row][col]->setStatus(PieceState::SELECTED);
+					board->setState(BoardState::SELECTING);
+					board->setSelectedPieceCoord({row, col});
+					break;
 				}
 				else
 				{
-					board->setState(BoardState::NORMAL);
-					board->getPieces().at(board->getSelectedPieceIndex())->setStatus(PieceState::NONE);
-					board->setSelectedPieceIndex(-1);
-                    break;
+					board->setState(BoardState::WAITING);
+					if (board->isNeighbour({row, col}))
+					{
+						board->swapPieces(board->getSelectedPieceCoord(), {row, col});
+						break;
+					}
+					else
+					{
+						board->setState(BoardState::NORMAL);
+						auto [row, column] = board->getSelectedPieceCoord();
+						board->getPieces().at(row).at(column)->setStatus(PieceState::NONE);
+						board->setSelectedPieceCoord({row, col	});
+						break;
+					}
 				}
 			}
+			index++;
 		}
-		index++;
 	}
 }
 

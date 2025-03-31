@@ -37,6 +37,12 @@ const sf::Vector2f Piece::getPosition() const
 	return mSprite->getPosition();
 }
 
+void Piece::setPosition(sf::Vector2f pos)
+{
+	mSprite->setPosition(pos);
+	mPosition = std::make_pair(pos.x, pos.y);
+}
+
 void Piece::setStatus(PieceState state)
 {
 	mState = state;
@@ -57,27 +63,21 @@ const bool Piece::isSelected() const
 	return mState == PieceState::SELECTED;
 }
 
-void Piece::setPosition(sf::Vector2f pos)
-{
-	mSprite->setPosition(pos);
-	mPosition = std::make_pair(pos.x, pos.y);
-}
-
 void Piece::update()
 {
-	if (mState != PieceState::SWAPPING)
+	if (mState != PieceState::SWAPPING && mState != PieceState::FALLING)
 		return;
 
-	if (static_cast<int>(this->getPosition().x) != mTargetPosition.x || static_cast<int>(this->getPosition().y) != mTargetPosition.y)
+	if (this->getPosition().x != mTargetPosition.x || this->getPosition().y != mTargetPosition.y)
 	{
 		if (this->getPosition().x < mTargetPosition.x)
-			mSprite->move(1, 0);
+			mSprite->move(2.f, 0);
 		else if (this->getPosition().x > mTargetPosition.x)
-			mSprite->move(-1, 0);
+			mSprite->move(-2.f, 0);
 		if (this->getPosition().y < mTargetPosition.y)
-			mSprite->move(0, 1);
+			mSprite->move(0, 2.f);
 		else if (this->getPosition().y > mTargetPosition.y)
-			mSprite->move(0, -1);
+			mSprite->move(0, -2.f);
 	}
 	else
 	{

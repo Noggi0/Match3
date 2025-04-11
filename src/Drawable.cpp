@@ -7,6 +7,7 @@
 void Drawable::setScale(float x, float y)
 {
 	mSprite->setScale(sf::Vector2f(x, y));
+	this->targetScale = {x, y};
 }
 
 void Drawable::setPosition(int x, int y)

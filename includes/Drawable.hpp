@@ -17,6 +17,7 @@ class Drawable
 		virtual void setScale(float x, float y);
 		virtual void setRotation(float angle);
 		virtual const sf::Sprite* getSprite() const;
+		sf::Vector2f targetScale = {1.0f, 1.0f};
 		~Drawable() = default;
 	protected:
 		std::unique_ptr<sf::Sprite> mSprite;

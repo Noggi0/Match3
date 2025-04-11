@@ -66,7 +66,7 @@ void Game::update()
                         if (element == mMainMenuElements.front()) // ignore background which is always first
                             continue;
                         if (element->getSprite()->getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
-                            element->setScale(1.01f, 1.01f);
+                            element->setScale(element->targetScale.x + 0.1f, element->targetScale.y + 0.1f);
                         else
                             element->setScale(1.0f, 1.0f);
                     }
@@ -105,13 +105,15 @@ void Game::renderMainMenu()
 void Game::loadMainMenuElements()
 {
     int x, y;
+    float scaleX = 0.5f, scaleY = 0.5f;
     auto *background = new Drawable();
     background->loadSprite(ASSETS_PATH + "/background.png");
-    background->setPosition(0, 10);
+    background->setPosition(0, 0);
     mMainMenuElements.push_back(background);
 
     auto *playButton = new Button();
     playButton->loadSprite(ASSETS_PATH + "/Play Button.png");
+    playButton->setScale(0.5f, 0.5f);
     x = (mRenderer->getWindow()->getSize().x / 2.0f) - (playButton->getSprite()->getGlobalBounds().width / 2);
     y = 0;
     playButton->setPosition(x, y);
@@ -120,6 +122,7 @@ void Game::loadMainMenuElements()
 
     auto *settingsButton = new Button();
     settingsButton->loadSprite(ASSETS_PATH + "/Settings Button.png");
+    settingsButton->setScale(0.5f, 0.5f);
     x = (mRenderer->getWindow()->getSize().x / 2) - (settingsButton->getSprite()->getGlobalBounds().width / 2);
     y = playButton->getSprite()->getGlobalBounds().height + 10;
     settingsButton->setPosition(x, y);
@@ -128,6 +131,7 @@ void Game::loadMainMenuElements()
 
     auto *quitButton = new Button();
     quitButton->loadSprite(ASSETS_PATH + "/Quit Button.png");
+    quitButton->setScale(0.5f, 0.5f);
     x = (mRenderer->getWindow()->getSize().x / 2) - (quitButton->getSprite()->getGlobalBounds().width / 2);
     y = settingsButton->getSprite()->getGlobalBounds().height + settingsButton->getSprite()->getGlobalBounds().top + 10;
     quitButton->setPosition(x, y);

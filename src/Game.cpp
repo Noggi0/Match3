@@ -66,16 +66,27 @@ void Game::update()
                         if (element == mMainMenuElements.front()) // ignore background which is always first
                             continue;
                         if (element->getSprite()->getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
-                            element->setScale(element->targetScale.x + 0.1f, element->targetScale.y + 0.1f);
+                            element->setScale(0.51f, 0.51f);
                         else
-                            element->setScale(1.0f, 1.0f);
+                            element->setScale(0.5f, 0.5f);
                     }
+                }
+            }
+            if (event.type == sf::Event::Resized) {
+                if (mState == GameState::MAIN_MENU)
+                {
+                    mMainMenuElements.clear();
+                    loadMainMenuElements();
+                } else if (mState == GameState::PLAYING) {
+                    mBoard->handleResize(event.size.width, event.size.height);
                 }
             }
         }
         switch (mState)
         {
             case GameState::MAIN_MENU:
+                if (mMainMenuElements.empty())
+                    loadMainMenuElements();
                 renderMainMenu();
                 break;
             case GameState::PLAYING:

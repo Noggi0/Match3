@@ -36,7 +36,7 @@ void Board::initBoard()
                 throw std::runtime_error("Couldn't load stone background sprite");
             boardBackgroundElement->setScale(0.14f, 0.14f);
             boardBackgroundElement->setPosition(position.first - 10, position.second - 10);
-            mBoardBackground.push_back(std::move(boardBackgroundElement));
+            mBoardBackground.push_back(boardBackgroundElement);
 
             if (y == 0 || y == mWidth - 1)
             {
@@ -48,7 +48,7 @@ void Board::initBoard()
                     boardBorderElement->setPosition(position.first - 10, position.second - 10);
                 else
                     boardBorderElement->setPosition(position.first + 60, position.second - 10);
-                mBoardBackground.push_back(std::move(boardBorderElement));
+                mBoardBackground.push_back(boardBorderElement);
             }
             if (i == 0 || i == mHeight - 1)
             {
@@ -61,7 +61,7 @@ void Board::initBoard()
                 else
                     boardBorderElement->setPosition(position.first - 10, position.second + 60);
                 boardBorderElement->setRotation(-90);
-                mBoardBackground.push_back(std::move(boardBorderElement));
+                mBoardBackground.push_back(boardBorderElement);
             }
         }
     }
@@ -273,6 +273,44 @@ void Board::update()
     {
         this->checkForMatches();
         this->makePiecesFall();
+    }
+}
+
+void Board::handleResize(int newWidth, int newHeight)
+{
+    int offsetX = (newWidth / 2) - (35 * this->mWidth);
+    int offsetY = (newHeight / 2) - (35 * this->mHeight);
+    this->mBoardPosition = { offsetX, offsetY };
+    std::cout << "Handle Resize" << std::endl;
+    int count = 0;
+    for (int i = 0; i < mHeight; i++)
+    {
+        for (int j = 0; j < mWidth; j++)
+        {
+            sf::Vector2f position = { static_cast<float>(mBoardPosition.x + (70 * j)), static_cast<float>(mBoardPosition.y + (70 * i)) };
+            mPieces.at(i).at(j)->setPosition(position);
+
+            mBoardBackground.at(count)->setPosition(position.x - 10, position.y - 10);
+            count++;
+
+            if (j == 0 || j == mWidth - 1)
+            {
+                
+                if (j == 0)
+                    mBoardBackground.at(count)->setPosition(position.x - 10, position.y - 10);
+                else
+                    mBoardBackground.at(count)->setPosition(position.x + 60, position.y - 10);
+                count++;
+            }
+            if (i == 0 || i == mHeight - 1)
+            {
+                if (i == 0)
+                    mBoardBackground.at(count)->setPosition(position.x - 10, position.y - 10);
+                else
+                    mBoardBackground.at(count)->setPosition(position.x - 10, position.y + 60);
+                count++;
+            }
+        }
     }
 }
 

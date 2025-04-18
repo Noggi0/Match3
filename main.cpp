@@ -8,8 +8,7 @@ int main()
 {
     Game game;
 
-    game.setGameState(GameState::PLAYING);
-    game.startLevel();
+    game.setGameState(GameState::MAIN_MENU);
     game.update();
     return 0;
 }

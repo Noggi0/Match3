@@ -40,7 +40,7 @@ void Renderer::drawLevel(const std::vector<std::vector<Piece *>>& pieces, const 
     sf::Text scoreText;
     scoreText.setFont(font);
     scoreText.setString(std::to_string(score));
-    scoreText.setPosition(WIDTH / 2 - scoreText.getGlobalBounds().width / 2, 0);
+    scoreText.setPosition(mWindow->getSize().x / 2 - scoreText.getGlobalBounds().width / 2, 0);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setCharacterSize(42);
     mWindow->draw(scoreText);

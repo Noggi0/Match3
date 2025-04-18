@@ -41,6 +41,7 @@ class Board
         void makePiecesFall();
         void fillHoles();
         void update();
+        void handleResize(int newWidth, int newHeight);
         int getScore() const;
         ~Board() = default;
     private:
